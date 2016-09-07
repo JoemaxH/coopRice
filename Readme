@@ -1,0 +1,30 @@
+Hello!
+This project is a basic web application that connects to a MySQL database using hibernate. 
+After creating a username and password or signing in the user can search the web for information 
+on cooperative video games. This information is then stored in a table or "wishlist".
+
+To use the webapp you must first have a connection to a database and tables with certain specifications.
+You can obtain the connection details in the hibernate.cfg.xml file or modify them yourself to meet your
+database's criteria.
+
+To quickly populate the database with the nescesary tables you can use the following SQL commands (MySQL):
+
+CREATE TABLE wishlist (
+id int(11) NOT NULL AUTO_INCREMENT,
+title varchar(100),
+genre varchar(50),
+localp int(11),
+onlinep int(11),
+normalPrice varchar(10),
+salePrice varchar(10),
+savings varchar(10),
+metacriticScore int(11),
+PRIMARY KEY (id));
+
+and
+
+CREATE TABLE logtable (
+id int (11) NOT NULL AUTO_INCREMENT,
+username varchar(50),
+password varchar(50),
+PRIMARY KEY (id));
