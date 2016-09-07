@@ -4,13 +4,29 @@
         "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="com.mycompany.mavenproject1">
+    
 
-    <class name="SystemUser" table="logtable">
-        <id name="id" column="ID">
-            <generator class="native"/>
-        </id>
-        <property name="username" column="username"/>
-        <property name="password" column="password"/>
-    </class>
+        <class name="SystemUser" table="logtable">
+            <id name="id" column="ID">
+                <generator class="native"/>
+            </id>
+            <property name="username" column="username" type="string"/>
+            <property name="password" column="password" type="string"/>
+        </class>
+        
+        <class name="WishListItem" table="wishlist">
+            <id name="id" column="id">
+                <generator class="native"/>
+            </id>
+            <property name="title" column="title" type="string"/>
+            <property name="genre" column="genre" type="string"/>
+            <property name="localp" column="localp" type="int"/>
+            <property name="onlinep" column="onlinep" type="int"/>
+            <property name="normalPrice" column="normalPrice" type="string"/>
+            <property name="salePrice" column="salePrice" type="string"/>
+            <property name="savings" column="savings" type="string"/>
+            <property name="metacriticScore" column="metacriticScore" type="int"/>
 
+        </class>
+    
 </hibernate-mapping>

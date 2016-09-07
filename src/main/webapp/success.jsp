@@ -12,7 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>YAY!!</h1>
+        <h1>Welcome ${param.username}!</h1>
         <form action="searchServ" submit>
             <p>
                 <label for="game_search">Enter a game title</label>

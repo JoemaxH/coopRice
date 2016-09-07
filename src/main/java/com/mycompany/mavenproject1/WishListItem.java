@@ -11,22 +11,24 @@ package com.mycompany.mavenproject1;
  */
 public class WishListItem {
     
+    private int id;
     private String title = "";
     private String genre = "";
-    private String local = "";
-    private String online = "";
+    private int localp;
+    private int onlinep;
     //sharkcheap
-    private String normalPrice = "";
-    private String salePrice = "";
-    private String savings = "";
-    private String metacriticScore = "";
+    private String normalPrice;
+    private String salePrice;
+    private String savings;
+    private int metacriticScore;
     
-    public WishListItem(String title, String genre, String local, String online,
-            String normalPrice, String salePrice, String savings, String metacriticScore){
+    public WishListItem(String title, String genre, int localp, int onlinep,
+            String normalPrice, String salePrice, String savings, int metacriticScore){
+        
         this.title = title;
         this.genre = genre;
-        this.local = local;
-        this.online = online;
+        this.localp = localp;
+        this.onlinep = onlinep;
         this.normalPrice = normalPrice;
         this.salePrice = salePrice;
         this.savings = savings;
@@ -35,6 +37,15 @@ public class WishListItem {
     public WishListItem(){
         
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
 
     public String getTitle() {
         return title;
@@ -52,20 +63,20 @@ public class WishListItem {
         this.genre = genre;
     }
 
-    public String getLocal() {
-        return local;
+    public int getLocalp() {
+        return localp;
     }
 
-    public void setLocal(String local) {
-        this.local = local;
+    public void setLocalp(int localp) {
+        this.localp = localp;
     }
 
-    public String getOnline() {
-        return online;
+    public int getOnlinep() {
+        return onlinep;
     }
 
-    public void setOnline(String online) {
-        this.online = online;
+    public void setOnlinep(int onlinep) {
+        this.onlinep = onlinep;
     }
 
     public String getNormalPrice() {
@@ -92,11 +103,11 @@ public class WishListItem {
         this.savings = savings;
     }
 
-    public String getMetacriticScore() {
+    public int getMetacriticScore() {
         return metacriticScore;
     }
 
-    public void setMetacriticScore(String metacriticScore) {
+    public void setMetacriticScore(int metacriticScore) {
         this.metacriticScore = metacriticScore;
     }
     
