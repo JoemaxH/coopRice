@@ -56,18 +56,7 @@
             </fieldset>
         </form>
         <script>
-            jQuery.validator.setDefaults({
-                
-                success: "valid"
-            });
-            $( "#myform" ).validate({
-                rules: {
-                    password: "required",
-                    password_again: {
-                        equalTo: "#password"
-                    }
-                }
-            });
+            
         </script>
         
     </body>

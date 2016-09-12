@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -64,26 +65,55 @@ public class searchServ extends HttpServlet {
             boolean foundOptimus = false;
             boolean foundCheapShark = false;
             
-            Element span = doc.select("games > game > title").first();
+            Element span = doc.select("games > game").first();
+            Element node = span.nextElementSibling();
+            String system = "PC";
+            boolean sysFound = true;
+            String title = "";
+            String genre = "";
+            int localp = 0;
+            int onlinep = 0;
+            String normalPrice = "";
+            String salePrice = "";
+            String savings = "";
+            int metacriticScore = 0;
+            
             if(span != null){
                 System.out.println("exists!");
                 foundOptimus = true;
-            
-                String title = doc.getElementsByTag("title").text();
-                String genre = doc.getElementsByTag("genre").text();
-                int local = Integer.parseInt(doc.getElementsByTag("local").text());
-                int online = Integer.parseInt(doc.getElementsByTag("online").text());
+                //check for multiple results!!!
+                if(span.select("game > system").text().equals(system)){
+                    sysFound = true;//case one its the first result
+                    title = node.select("game > title").text();
+                    genre = node.select("game > genre").text();
+                    localp = Integer.parseInt(node.select("game > local").text());
+                    onlinep = Integer.parseInt(node.select("game > online").text());
+                }else{
+                    while(!(span.select("game > system").text().equals(system))){
+                        if(node != null){
+                            if(node.select("game > system").text().equals(system)){
+                                sysFound = true;
+                                title = node.select("game > title").text();
+                                genre = node.select("game > genre").text();
+                                localp = Integer.parseInt(node.select("game > local").text());
+                                onlinep = Integer.parseInt(node.select("game > online").text());
+                                break;//case 2: its one of the following results
+                            }else{
+                                span = node;
+                                node = span.nextElementSibling();
+                            }   
+                        }else{
+                            System.out.println("Debug: no "+ system + " game found");
+                            sysFound = false;
+                            break; //case 3: no game found for that system 
+                        }
+                    }
+                }
                 
-
-                System.out.println(title+genre+local+online);
+                System.out.println("debug: "+title+genre+localp+onlinep);
                 //Cheapshark scrape 
 
-                String normalPrice = "";
-                String salePrice = "";
-                String savings = "";
-                int metacriticScore = 0;
-
-                String urlString = ("http://www.cheapshark.com/api/1.0/deals?storeID=6&desc=0&title=".concat(replaced).concat("&pageSize=5")).trim(); //just a string
+                String urlString = ("http://www.cheapshark.com/api/1.0/deals?&desc=0&title=".concat(replaced).concat("&pageSize=10")).trim(); //just a string
                 try {
 
                     String jsonS = readUrl(urlString);
@@ -102,8 +132,17 @@ public class searchServ extends HttpServlet {
                     }else{
                         //break exectution
                         System.out.println("no results found on cheapshark");
+                        String resultMessage = "No results found on cheapshark";
+                        request.setAttribute("resultMessage", resultMessage);
+                        request.getRequestDispatcher("/success.jsp").forward(request, response);
+                    }   
+                    if(!foundCheapShark){
+                        //break execution
+                        System.out.println("no matches found on cheapshark");
+                        String resultMessage = "No matches found on cheapshark!";
+                        request.setAttribute("resultMessage", resultMessage);
+                        request.getRequestDispatcher("/success.jsp").forward(request, response);
                     }
-                    
                     System.out.println(normalPrice);
                     System.out.println(salePrice);
                     System.out.println(savings);
@@ -113,9 +152,9 @@ public class searchServ extends HttpServlet {
                         e.printStackTrace();
                 }
                 
-                WishListItem wli = new WishListItem( title, genre, local, online, normalPrice, salePrice, savings, metacriticScore);
-                request.setAttribute("wish", wli);
-                response.sendRedirect(request.getContextPath() + "/result.jsp");
+                WishListItem wli = new WishListItem( title, genre, localp, onlinep, normalPrice, salePrice, savings, metacriticScore);
+                //request.setAttribute("wish", wli);
+                //response.sendRedirect(request.getContextPath() + "/result.jsp");
                 if(foundCheapShark){
                     //save search wli to database
                     SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -127,6 +166,11 @@ public class searchServ extends HttpServlet {
                         wli.setId(id);
                         session.getTransaction().commit();
                         session.close();
+                        //rdp.forward(request, response);
+                        System.out.println("Game added to database!" );
+                        String resultMessage = "Game added to database!";
+                        request.setAttribute("resultMessage", resultMessage);
+                        request.getRequestDispatcher("/success.jsp").forward(request, response);
                         //RequestDispatcher rdp = request.getRequestDispatcher("/success.jsp");
                         //rdp.forward(request, response);
                     } else{
@@ -134,10 +178,16 @@ public class searchServ extends HttpServlet {
                         //RequestDispatcher rdp = request.getRequestDispatcher("/fail.jsp");
                         //rdp.forward(request, response);
                         System.out.println("Game already exists in database!" );
+                        String resultMessage = "Game already exists in database!";
+                        request.setAttribute("resultMessage", resultMessage);
+                        request.getRequestDispatcher("/success.jsp").forward(request, response);
                     }
                 }
             } else{
                 System.out.println("No game found on co-optimus");
+                String resultMessage = "No game found on co-optimus";
+                request.setAttribute("resultMessage", resultMessage);
+                request.getRequestDispatcher("/success.jsp").forward(request, response);
             }
             //System.out.println("debug");
                     
@@ -154,14 +204,13 @@ public class searchServ extends HttpServlet {
         }        
         return strBuffer.toString();
     }
-    
-    public static SystemUser gameExists(String gameName){
+    public static WishListItem gameExists(String gameName){
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session session = sf.openSession();
         Criteria crit = session.createCriteria(WishListItem.class);
         Criterion cond1 = Restrictions.eq("title", gameName);
         crit.add(Restrictions.and(cond1));
-        return (SystemUser) crit.uniqueResult();
+        return (WishListItem) crit.uniqueResult();
     }
     private static String readUrl(String urlString) throws Exception {
         BufferedReader reader = null;
