@@ -43,6 +43,18 @@ public class createAccount extends HttpServlet {
             
             String username = request.getParameter("new_username");
             String password = request.getParameter("new_password");
+            String confirm = request.getParameter("confirm_password");
+            String errorMsg = "";
+            
+            if(!password.equals(confirm)){
+                //failure
+                errorMsg = "Passwords do not match";
+                request.setAttribute("errorMsg", errorMsg);
+                RequestDispatcher rdp = request.getRequestDispatcher("/fail.jsp");
+                rdp.forward(request, response);
+                return;
+            }
+            
             SystemUser su = new SystemUser(allusers.size(),username, password);
             SessionFactory sf = HibernateUtil.getSessionFactory();
             Session session = sf.openSession();
@@ -54,13 +66,17 @@ public class createAccount extends HttpServlet {
                 su.setId(id);
                 session.getTransaction().commit();
                 session.close();
+                request.setAttribute("username", username);
                 RequestDispatcher rdp = request.getRequestDispatcher("/success.jsp");
                 rdp.forward(request, response);
             } else{
                 //something about user already exists
+                errorMsg = "Username already exists";
+                request.setAttribute("errorMsg", errorMsg);
                 RequestDispatcher rdp = request.getRequestDispatcher("/fail.jsp");
                 rdp.forward(request, response);
-                System.out.println("Username already exists!" );
+                
+                System.out.println(errorMsg );
             }
         }
     }

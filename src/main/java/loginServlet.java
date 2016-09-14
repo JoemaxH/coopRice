@@ -52,6 +52,7 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String errorMsg = "";
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -66,7 +67,9 @@ public class loginServlet extends HttpServlet {
             RequestDispatcher rdp = request.getRequestDispatcher("/success.jsp");
              rdp.forward(request, response);
         }else{
-            //redirect negative 
+            //redirect negative
+            errorMsg = "Invalid username or password";
+            request.setAttribute("errorMsg", errorMsg);
             RequestDispatcher rdp = request.getRequestDispatcher("/fail.jsp");
             rdp.forward(request, response);
         };

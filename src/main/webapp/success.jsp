@@ -23,6 +23,9 @@
                 <input class="submit" type="submit" value="Search!"/>
             </p>
         </form>
+        <form action="fetchManage" submit>
+            <input class="submit" type="submit" value="Manage Account"/>
+        </form>
         <form action="fetchTable" submit>
             <input class="submit" type="submit" value="Update Table"/>
         </form>
