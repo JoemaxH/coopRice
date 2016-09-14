@@ -1,8 +1,8 @@
+fetchTable.class
 com\mycompany\mavenproject1\WishListItem.class
 loginServlet.class
 createAccount.class
-fetchTable.class
 searchServ.class
-HibernateUtil\HibernateUtil.class
-com\mycompany\mavenproject1\SystemUser.class
 com\mycompany\mavenproject1\Main.class
+com\mycompany\mavenproject1\SystemUser.class
+HibernateUtil\HibernateUtil.class
